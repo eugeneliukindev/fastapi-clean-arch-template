@@ -1,0 +1,37 @@
+from typing import Annotated
+from uuid import UUID
+
+from fastapi import Depends
+
+from src.core.uow import UoWDep
+from src.models.users import User
+from src.schemas.users import UserCreate, UserPatch, UserPut
+
+
+class UsersService:
+    def __init__(self, uow: UoWDep):
+        self.uow = uow
+
+    async def get(self, id_: UUID) -> User | None:
+        return await self.uow.users.get(id_)
+
+    async def get_all(self) -> list[User]:
+        return await self.uow.users.get_all()
+
+    async def create(self, data: UserCreate) -> User:
+        user = await self.uow.users.create(data)
+        await self.uow.commit()
+        return user
+
+    async def update(self, id_: UUID, data: UserPut | UserPatch) -> User | None:
+        user = await self.uow.users.update(id_, data)
+        await self.uow.commit()
+        return user
+
+    async def delete(self, id_: UUID) -> User | None:
+        deleted = await self.uow.users.delete(id_)
+        await self.uow.commit()
+        return deleted
+
+
+UserServiceDep = Annotated[UsersService, Depends(UsersService)]
