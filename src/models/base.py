@@ -1,6 +1,8 @@
 from sqlalchemy import MetaData
 from sqlalchemy.orm import DeclarativeBase
 
+from ._mixins import IdMixin
+
 _NAMING_CONVENTION = {
     "ix": "ix_%(column_0_label)s",
     "uq": "uq_%(table_name)s_%(column_0_name)s",
@@ -16,3 +18,7 @@ class Base(DeclarativeBase):
     def __repr__(self) -> str:
         cols = ", ".join(f"{c.name}={getattr(self, c.name)!r}" for c in self.__table__.columns)
         return f"<{self.__class__.__name__}({cols})>"
+
+
+class BaseEntity(IdMixin, Base):
+    __abstract__ = True

@@ -1,18 +1,16 @@
 from datetime import datetime
-from uuid import UUID
 
 from sqlalchemy import DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.core.enums import UserStatus
 
-from .base import Base
+from .base import BaseEntity
 
 
-class User(Base):
+class User(BaseEntity):
     __tablename__ = "users"
 
-    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True, server_default=func.uuidv7())
     first_name: Mapped[str] = mapped_column(String(35))
     last_name: Mapped[str] = mapped_column(String(35))
     status: Mapped[UserStatus] = mapped_column(default=UserStatus.ACTIVE)
