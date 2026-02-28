@@ -3,15 +3,18 @@ from uuid import UUID
 from fastapi import APIRouter, HTTPException, status
 
 from src.domain.services.users import UserServiceDep
-from src.schemas.base import ApiResponse
+from src.schemas.common.pagination import Pagination
+from src.schemas.common.response import ApiResponse, Meta
 from src.schemas.users import UserCreate, UserPatch, UserPut, UserResponse
 
 router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.get("", response_model=ApiResponse[list[UserResponse]])
-async def get_users(service: UserServiceDep):
-    return ApiResponse(data=await service.get_all())
+async def get_users(service: UserServiceDep, pagination: Pagination):
+    users = await service.get_all(offset=pagination.offset, limit=pagination.per_page)
+    total = await service.count()
+    return ApiResponse(data=users, meta=Meta(total=total, page=pagination.page, per_page=pagination.per_page))
 
 
 @router.get("/{id}", response_model=ApiResponse[UserResponse])
