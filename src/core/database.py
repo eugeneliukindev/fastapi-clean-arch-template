@@ -1,17 +1,18 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Annotated, Any
 
+from fastapi import Depends
 from sqlalchemy import URL
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from src.config import settings
 
 if TYPE_CHECKING:
     from collections.abc import AsyncGenerator
 
-    from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
+    from sqlalchemy.ext.asyncio import AsyncEngine
 
 
 class DatabaseManager:
@@ -41,3 +42,5 @@ db_manager = DatabaseManager(
     pool_size=settings.db.pool_size,
     max_overflow=settings.db.max_overflow,
 )
+
+SessionDep = Annotated[AsyncSession, Depends(db_manager.session_getter)]
