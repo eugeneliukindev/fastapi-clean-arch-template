@@ -13,10 +13,8 @@ class UserCreate(BaseModel):
     status: UserStatus = UserStatus.ACTIVE
 
 
-class UserPut(BaseModel):
-    first_name: str
-    last_name: str
-    status: UserStatus = UserStatus.ACTIVE
+class UserPut(UserCreate):
+    pass
 
 
 class UserPatch(UserPut, PartialModel):
