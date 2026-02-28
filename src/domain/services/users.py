@@ -34,4 +34,4 @@ class UsersService:
         return deleted
 
 
-UserServiceDep = Annotated[UsersService, Depends(UsersService)]
+UserServiceDep = Annotated[UsersService, Depends()]
