@@ -11,7 +11,7 @@ class _ExcludeNoneModel(BaseModel):
         return {k: v for k, v in handler(self).items() if v is not None}
 
 
-class _Meta(_ExcludeNoneModel):
+class Meta(_ExcludeNoneModel):
     total: int | None = None
     page: int | None = None
     per_page: int | None = None
@@ -27,14 +27,4 @@ class _Meta(_ExcludeNoneModel):
 class ApiResponse[T](_ExcludeNoneModel):
     data: T
     message: str | None = None
-    meta: _Meta | None = None
-
-
-class PartialModel(BaseModel):
-    @classmethod
-    def __pydantic_init_subclass__(cls, **kwargs: Any) -> None:
-        super().__pydantic_init_subclass__(**kwargs)
-        for field in cls.model_fields.values():
-            if field.is_required():
-                field.default = None
-        cls.model_rebuild(force=True)
+    meta: Meta | None = None

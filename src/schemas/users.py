@@ -5,7 +5,8 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, StringConstraints
 
 from src.core.enums import UserStatus
-from src.schemas.base import PartialModel
+
+from .common import PartialModel
 
 
 class UserCreate(BaseModel):
