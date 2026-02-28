@@ -3,7 +3,12 @@ name = "unit-of-work-fastapi"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "alembic>=1.18.4",
+    "fastapi[standard]>=0.134.0",
+    "sqlalchemy[asyncio]>=2.0.47",
+    "uvicorn>=0.41.0",
+]
 
 [dependency-groups]
 dev = [
