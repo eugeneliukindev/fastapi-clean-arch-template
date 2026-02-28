@@ -1,13 +1,13 @@
 from uuid import UUID
 
-from pydantic import BaseModel as PydanticModel
+from pydantic import BaseModel
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models.base import BaseEntity
 
 
-class BaseRepository[T: BaseEntity, C: PydanticModel, U: PydanticModel]:
+class BaseRepository[T: BaseEntity, C: BaseModel, U: BaseModel]:
     model: type[T]
 
     def __init__(self, session: AsyncSession):
@@ -28,10 +28,11 @@ class BaseRepository[T: BaseEntity, C: PydanticModel, U: PydanticModel]:
         result = await self.session.execute(
             update(self.model)
             .where(self.model.id == id_)
-            .values(**data.model_dump(exclude_unset=True))
+            .values(data.model_dump(exclude_unset=True))
             .returning(self.model)
         )
         return result.scalar_one_or_none()
 
-    async def delete(self, id_: UUID) -> None:
-        await self.session.execute(delete(self.model).where(self.model.id == id_))
+    async def delete(self, id_: UUID) -> T | None:
+        result = await self.session.execute(delete(self.model).where(self.model.id == id_).returning(self.model))
+        return result.scalar_one_or_none()
