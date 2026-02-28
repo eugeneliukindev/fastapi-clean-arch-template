@@ -24,4 +24,5 @@ class User(BaseEntity):
         DateTime(timezone=True),
         default=datetime.now,
         server_default=func.now(),
+        onupdate=func.now(),
     )
