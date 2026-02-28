@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Annotated, Final
 
-from pydantic import BaseModel, ConfigDict, Field, PostgresDsn, computed_field
+from pydantic import BaseModel, ConfigDict, Field, NonNegativeInt, PostgresDsn, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -17,6 +17,11 @@ class DatabaseConfig(BaseModel):
     host: str = "localhost"
     port: _Port = 5432
     database: str
+
+    echo: bool = False
+    echo_pool: bool = False
+    pool_size: NonNegativeInt = 10
+    max_overflow: NonNegativeInt = 5
 
     model_config = ConfigDict(arbitrary_types_allowed=True)  # @computed_field for url
 
