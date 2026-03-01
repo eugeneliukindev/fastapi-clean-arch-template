@@ -6,22 +6,26 @@ Production-ready FastAPI template with async SQLAlchemy, Unit of Work & Reposito
 
 ```
 src/
-├── api/v1/          # Routers (HTTP layer)
-├── core/            # Database, UoW, enums
+├── api/
+│   ├── exception_handlers.py  # Maps domain exceptions → HTTP responses
+│   └── v1/                    # Routers (HTTP layer)
+├── core/                      # Database, UoW, enums
 ├── domain/
-│   ├── repositories/  # BaseRepository + concrete repos
-│   └── services/      # Business logic
-├── models/          # SQLAlchemy models
+│   ├── exceptions.py          # DomainException, NotFoundException, ConflictException
+│   ├── repositories/          # BaseRepository + concrete repos
+│   └── services/              # Business logic
+├── models/                    # SQLAlchemy models
 ├── schemas/
-│   ├── common/      # Shared schemas (ApiResponse, Meta, Pagination, PartialModel)
-│   └── users.py     # User request/response schemas
-└── config.py        # Settings via pydantic-settings
+│   ├── common/                # Shared schemas (ApiResponse, Meta, Pagination, PartialModel)
+│   └── users.py               # User request/response schemas
+└── config.py                  # Settings via pydantic-settings
 ```
 
 ### Patterns
 
 - **Unit of Work** — wraps session lifecycle, commits/rollbacks in one place
 - **Repository** — generic `BaseRepository[T, C, U]` with typed CRUD via `INSERT/UPDATE/DELETE ... RETURNING`
+- **Domain exceptions** — services throw `NotFoundException`/`ConflictException`, handlers in the API layer map them to HTTP status codes
 - **`ApiResponse[T]`** — consistent response envelope with `data`, `message`, `meta` (pagination)
 - **`PartialModel`** — auto-generates PATCH schemas from PUT schemas without field duplication
 
