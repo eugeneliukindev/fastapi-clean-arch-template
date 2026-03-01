@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING, Annotated, Any
 
 from fastapi import Depends
@@ -18,16 +17,15 @@ if TYPE_CHECKING:
 class DatabaseManager:
     def __init__(self, url: str | URL, **engine_kw: Any):
         self.engine: AsyncEngine = create_async_engine(url=url, **engine_kw)
-        self._session_maker: async_sessionmaker[AsyncSession] = async_sessionmaker(
+        self.session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(
             bind=self.engine,
             autocommit=False,
             autoflush=False,
             expire_on_commit=False,
         )
-        self.session_factory = asynccontextmanager(self.session_getter)
 
     async def session_getter(self) -> AsyncGenerator[AsyncSession, None]:
-        async with self._session_maker() as session:
+        async with self.session_factory() as session:
             yield session
 
 
