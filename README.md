@@ -31,17 +31,9 @@ src/
 
 ## Getting started
 
-### 1. Clone & install dependencies
-
 ```bash
 git clone https://github.com/your-username/fastapi-clean-arch-template
 cd fastapi-clean-arch-template
-uv sync
-```
-
-### 2. Configure environment
-
-```bash
 cp .env.example .env
 ```
 
@@ -53,49 +45,47 @@ MY_APP__DB__PASSWORD=postgres
 MY_APP__DB__DATABASE=app
 ```
 
-### 3. Start database
-
 ```bash
-docker compose up -d
-```
-
-### 4. Run migrations
-
-```bash
-uv run alembic upgrade head
-```
-
-### 5. Start server
-
-```bash
-uv run src/main.py
+just install  # install dependencies
+just up       # start PostgreSQL
+just migrate  # apply migrations
+just dev      # start server
 ```
 
 API docs: http://localhost:8000/docs
 
+## Commands
+
+```bash
+just install              # install dependencies
+just dev                  # start development server
+just up                   # start Docker services
+just down                 # stop Docker services
+just logs                 # follow Docker logs
+just migrate              # apply all pending migrations
+just migration "add ..."  # create a new migration
+just lint                 # run linters and formatters
+just check                # lint + type checking
+```
+
 ## Migrations
 
 ```bash
-# Create migration
-uv run alembic revision --autogenerate -m "description"
-
-# Apply
-uv run alembic upgrade head
-
-# Rollback one step
-uv run alembic downgrade -1
+just migration "add users table"  # create
+just migrate                      # apply
+uv run alembic downgrade -1       # rollback one step
 ```
 
 ## API
 
-| Method   | Endpoint             | Description    |
-|----------|----------------------|----------------|
-| `GET`    | `/api/v1/users`      | List users     |
-| `GET`    | `/api/v1/users/{id}` | Get user       |
-| `POST`   | `/api/v1/users`      | Create user    |
-| `PUT`    | `/api/v1/users/{id}` | Replace user   |
-| `PATCH`  | `/api/v1/users/{id}` | Update user    |
-| `DELETE` | `/api/v1/users/{id}` | Delete user    |
+| Method   | Endpoint             | Description  |
+|----------|----------------------|--------------|
+| `GET`    | `/api/v1/users`      | List users   |
+| `GET`    | `/api/v1/users/{id}` | Get user     |
+| `POST`   | `/api/v1/users`      | Create user  |
+| `PUT`    | `/api/v1/users/{id}` | Replace user |
+| `PATCH`  | `/api/v1/users/{id}` | Update user  |
+| `DELETE` | `/api/v1/users/{id}` | Delete user  |
 
 All responses follow the `ApiResponse[T]` envelope:
 
@@ -116,4 +106,4 @@ List with pagination (`?page=1&per_page=20`):
 
 ## License
 
-MIT
+[MIT](LICENSE)
