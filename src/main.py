@@ -4,6 +4,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from src.api import router as api_router
+from src.api.exception_handlers import register_exception_handlers
 from src.core.database import db_manager
 
 
@@ -15,6 +16,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(api_router)
+register_exception_handlers(app)
 
 
 if __name__ == "__main__":
