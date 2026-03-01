@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator
+from types import TracebackType
 from typing import Annotated, Self
 
 from fastapi import Depends
@@ -20,14 +21,22 @@ class UnitOfWork:
     async def rollback(self) -> None:
         await self.session.rollback()
 
+    async def __aenter__(self) -> Self:
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        if exc_type is not None:
+            await self.rollback()
+
     @classmethod
     async def getter(cls, session: SessionDep) -> AsyncGenerator[Self, None]:
-        self = cls(session)
-        try:
+        async with cls(session) as self:
             yield self
-        except BaseException:
-            await self.rollback()
-            raise
 
 
 UoWDep = Annotated[UnitOfWork, Depends(UnitOfWork.getter)]
