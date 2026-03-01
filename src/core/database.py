@@ -28,11 +28,7 @@ class DatabaseManager:
 
     async def session_getter(self) -> AsyncGenerator[AsyncSession, None]:
         async with self._session_maker() as session:
-            try:
-                yield session
-            except BaseException:
-                await session.rollback()
-                raise
+            yield session
 
 
 db_manager = DatabaseManager(
