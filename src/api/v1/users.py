@@ -12,9 +12,9 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("")
 async def get_users(service: UserServiceDep, pagination: Pagination) -> ApiResponse[list[UserResponse]]:
-    users = await service.get_all(offset=pagination.offset, limit=pagination.per_page)
+    users = await service.get_all(offset=pagination.offset, limit=pagination.limit)
     total = await service.count()
-    return ApiResponse(data=users, meta=Meta(total=total, page=pagination.page, per_page=pagination.per_page))
+    return ApiResponse(data=users, meta=Meta(total=total, page=pagination.page, per_page=pagination.limit))
 
 
 @router.get("/{id}")
