@@ -11,7 +11,7 @@ _Port = Annotated[int, Field(ge=1024, le=65_535)]
 
 
 class DatabaseConfig(BaseModel):
-    drivername: PostgresDsn = "postgresql+asyncpg"
+    drivername: PostgresDsn = "postgresql+asyncpg"  # type: ignore[assignment]
     username: str
     password: str
     host: str = "localhost"
@@ -25,11 +25,11 @@ class DatabaseConfig(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)  # @computed_field for url
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def url(self) -> URL:
         return URL.create(
-            drivername=self.drivername,
+            drivername=self.drivername,  # type: ignore[arg-type]
             username=self.username,
             password=self.password,
             host=self.host,

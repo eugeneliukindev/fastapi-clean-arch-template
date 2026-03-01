@@ -35,7 +35,7 @@ class BaseRepository[T: BaseEntity, C: BaseModel, U: BaseModel]:
         result = await self.session.execute(
             update(self.model)
             .where(self.model.id == id_)
-            .values(data.model_dump(exclude_unset=True))
+            .values(data.model_dump(exclude_unset=True))  # for patch http methods
             .returning(self.model)
         )
         return result.scalar_one_or_none()

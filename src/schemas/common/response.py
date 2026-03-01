@@ -1,8 +1,7 @@
 import math
 from typing import Any
 
-from pydantic import BaseModel, computed_field, model_serializer
-from pydantic.functional_serializers import SerializerFunctionWrapHandler
+from pydantic import BaseModel, SerializerFunctionWrapHandler, computed_field, model_serializer
 
 
 class _ExcludeNoneModel(BaseModel):
@@ -16,7 +15,7 @@ class Meta(_ExcludeNoneModel):
     page: int | None = None
     per_page: int | None = None
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def total_pages(self) -> int | None:
         if self.total is None or self.per_page is None:

@@ -10,33 +10,33 @@ from src.schemas.users import UserCreate, UserPatch, UserPut, UserResponse
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.get("", response_model=ApiResponse[list[UserResponse]])
-async def get_users(service: UserServiceDep, pagination: Pagination):
+@router.get("")
+async def get_users(service: UserServiceDep, pagination: Pagination) -> ApiResponse[list[UserResponse]]:
     users = await service.get_all(offset=pagination.offset, limit=pagination.per_page)
     total = await service.count()
     return ApiResponse(data=users, meta=Meta(total=total, page=pagination.page, per_page=pagination.per_page))
 
 
-@router.get("/{id}", response_model=ApiResponse[UserResponse])
-async def get_user(id: UUID, service: UserServiceDep):
+@router.get("/{id}")
+async def get_user(id: UUID, service: UserServiceDep) -> ApiResponse[UserResponse]:
     return ApiResponse(data=await service.get(id))
 
 
-@router.post("", response_model=ApiResponse[UserResponse], status_code=status.HTTP_201_CREATED)
-async def create_user(data: UserCreate, service: UserServiceDep):
+@router.post("", status_code=status.HTTP_201_CREATED)
+async def create_user(data: UserCreate, service: UserServiceDep) -> ApiResponse[UserResponse]:
     return ApiResponse(data=await service.create(data))
 
 
-@router.put("/{id}", response_model=ApiResponse[UserResponse])
-async def put_user(id: UUID, data: UserPut, service: UserServiceDep):
+@router.put("/{id}")
+async def put_user(id: UUID, data: UserPut, service: UserServiceDep) -> ApiResponse[UserResponse]:
     return ApiResponse(data=await service.update(id, data))
 
 
-@router.patch("/{id}", response_model=ApiResponse[UserResponse])
-async def patch_user(id: UUID, data: UserPatch, service: UserServiceDep):
+@router.patch("/{id}")
+async def patch_user(id: UUID, data: UserPatch, service: UserServiceDep) -> ApiResponse[UserResponse]:
     return ApiResponse(data=await service.update(id, data))
 
 
-@router.delete("/{id}", response_model=ApiResponse[UserResponse])
-async def delete_user(id: UUID, service: UserServiceDep):
+@router.delete("/{id}")
+async def delete_user(id: UUID, service: UserServiceDep) -> ApiResponse[UserResponse]:
     return ApiResponse(data=await service.delete(id))
