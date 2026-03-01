@@ -22,7 +22,7 @@ class UsersService:
     async def count(self) -> int:
         return await self.uow.users.count()
 
-    async def get_all(self, offset: int = 0, limit: int = 20) -> list[User]:
+    async def get_all(self, offset: int = 0, limit: int | None = 20) -> list[User]:
         return await self.uow.users.get_all(offset=offset, limit=limit)
 
     async def create(self, data: UserCreate) -> User:
